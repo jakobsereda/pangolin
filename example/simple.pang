@@ -1,0 +1,88 @@
+|| Numerical Expressions:
+
+~4
+4 + 2
+4 - 2
+4 * 2
+4 / 2
+4 % 2
+4 << 2
+4 >> 2
+4 & 2
+4 | 2
+4 ^ 2
+
+i ~= i
+i += 1
+i -= 1
+i *= 1
+i /= 1
+i %= 1
+i &= 1
+i |= 1
+i ^= 1
+i >>= 1
+i <<= 1
+
+i++
+i--
+
+true
+false
+
+_ .& _
+_ .| _
+_ ~& _
+_ ~| _
+~_
+
+_ == _
+_ >= _
+_ <= _
+_ < _
+_ > _
+
+|| declarations:
+
+let _: T = _;
+let _: T;
+let _, _, _: T;
+? let _: T, _: E, _: S;
+
+|| functions
+
+def?
+let name(p: T, e: T): ret {
+
+}
+
+|| if statements
+
+perchance (_) {
+
+} mayhaps (_) {
+
+} perhaps {
+
+}
+
+|| loops
+
+whirl (true) {
+
+} 
+
+twirl (x in y) {
+
+}
+
+twirl (let x: int = 0; x < y; x++) {
+
+}
+
+|| structs
+
+let Name {
+    p: T;
+    e: T;
+}
