@@ -58,6 +58,8 @@ let name(p: T, e: T): ret {
 
 || if statements
 
+|| think about pangolins
+
 perchance (_) {
 
 } mayhaps (_) {
@@ -86,3 +88,8 @@ let Name {
     p: T;
     e: T;
 }
+
+
+|| jake notes
+|| some sort of scent related exceptions
+|| shell/scales as function modifiers (access modifiers?)

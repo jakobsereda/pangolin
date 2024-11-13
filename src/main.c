@@ -3,12 +3,7 @@
 #include <string.h>
 
 /**
- *  - read in a file and spits its contents out
- *     - dont cause a mem leak/buffer overflow
- *  - parse cmd line args
- *     - debug flag
- *     - output file flag 
- *     - make sure they didnt pass in extra stuff
+ * TODO:
  *  - tokenizer/lexer 
  *  - symbol table
  *  - parser (recursive descent parser on an absract syntax tree)
@@ -18,7 +13,7 @@
 void print_help() {
     printf("USAGE: pangolin [OPTIONS] <FILEPATH>\n");
     printf("OPTIONS:\n");
-    printf("  --help, h            display help message\n");
+    printf("  --help, -h           display help message\n");
     printf("  --debug, -d          enable debug mode\n");
     printf("  --output, -o <file>  specify output file\n");
 }
