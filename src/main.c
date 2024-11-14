@@ -8,6 +8,7 @@
  *  - symbol table
  *  - parser (recursive descent parser on an absract syntax tree)
  *  - code gen
+ *  - test
  */
 
 void print_help() {
