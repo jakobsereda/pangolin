@@ -209,9 +209,6 @@ static TokenType checkKeyword(Lexer* lexer, int start, int length, const char* r
 	return TOKEN_IDENTIFIER;
 }
 
-/**
- * Checks the type of identiifer that a token is.
- */
 static TokenType checkIdentifier (){
 	return 0;
 }
