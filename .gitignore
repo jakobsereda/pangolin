@@ -1,2 +1,5 @@
 # build dir
 bin/
+
+#vscode folder
+.vscode/*

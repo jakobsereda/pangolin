@@ -188,7 +188,7 @@ static void ignoreWhitespace(Lexer* lexer){
             case '|':
                 if(nextPeek(lexer) == '|')
                     while(peek(lexer) != '\n' && !atEnd(lexer))
-                        increment(lexer);
+                        lexer -> column++;
                 else
                     return;
                 break;
