@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 
 typedef enum {
     // keywords
@@ -82,14 +84,16 @@ typedef struct{
     const char* start;
     const char* current;
     int line;
-    int colunmn;
+    int column;
 } Lexer;
 
+//Keywords
 typedef struct{
     const char* keyword;
     TokenType type;
 } Keyword;
 
+//Array of keywords
 static Keyword keywords[] = {
     {"let", TOKEN_LET},
     {"def", TOKEN_DEF},
@@ -103,3 +107,93 @@ static Keyword keywords[] = {
     {"false", TOKEN_FALSE},
     {NULL, TOKEN_ERROR}  // sentinel
 };
+
+//Initalize the lexer
+void init_lexer (Lexer* lexer, const char* source){
+    lexer -> source = source;
+    lexer -> start = source;
+    lexer -> current = source;
+    lexer -> line = 1;
+    lexer -> column = 1;
+}
+
+/**
+ * Checks if the current pointer in the lexer points to the end of the source.
+ */
+static bool atEnd (Lexer* lexer){
+    return *lexer -> current == '\0'; //Last character is the null character
+}
+
+/**
+ * Return the character the current pointer is pointing at in the lexer.
+ */
+static char peek (Lexer* lexer){
+    return *lexer -> current;
+}
+
+/**
+ * Returns the next character the current pointer is pointing at in the lexer.
+ */
+static char nextPeek (Lexer* lexer){
+    if(atEnd(lexer)) return '\0';
+    return *(lexer -> current + 1);
+}
+
+/**
+ * Checks if expected is the same as the character the current pointer is pointing to in the lexer.
+ */
+static bool match (Lexer* lexer, char expected){
+    if(atEnd(lexer)) return false;
+    if(*lexer -> current != expected) return false;
+
+    lexer -> column++;
+    lexer -> current++;
+    return true;
+}
+
+/**
+ * Creates a token from the current lexer.
+ * 
+ * Ryan notes: learn more about malloc and memory
+ */
+static Token* makeToken(Lexer* lexer, TokenType type) {
+    Token* token = (Token*)malloc(sizeof(Token));
+    int length = (int)(lexer -> current - lexer -> start);
+    token -> lexeme = (char*)malloc(length + 1);
+    memcpy(token -> lexeme, lexer -> start, length);
+    token -> lexeme[length] = '\0';
+    token -> type = type;
+    token -> line = lexer -> line;
+    token -> column = lexer -> column - length;
+    return token;
+}
+
+/**
+ * Lets the lexer ignore whitespace and comments.
+ */
+static void ignoreWhitespace(Lexer* lexer){
+    while(true){
+        char c = peek(lexer);
+        switch(c){
+            case ' ': 
+            case '\r':
+            case '\t':
+                lexer -> column++;
+                break;
+            case '\n':
+                lexer -> line++;
+                lexer -> column = 1;
+                lexer -> column++;
+                break;
+            case '|':
+                if(nextPeek(lexer) == '|')
+                    while(peek(lexer) != '\n' && !atEnd(lexer))
+                        increment(lexer);
+                else
+                    return;
+                break;
+            default:
+            return;
+        }
+    }
+}
