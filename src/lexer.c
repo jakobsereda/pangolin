@@ -232,7 +232,7 @@ static TokenType checkIdentifierType (Lexer* lexer){
 }
 
 static Token* identifier(Lexer *lexer){
-  while(isalnum(peek(lexer)) || peek(lexer) == '_'){
+  while(isalnum(peek(lexer))){
     lexer -> column++;
   }
   return makeToken(lexer, checkIdentifierType(lexer));
@@ -254,8 +254,21 @@ Token* scanToken(Lexer* lexer){
   lexer -> column++;
   char c = *lexer -> current++;
 
-  if(isalpha(c) || c == '_') return identifier(lexer);
+  if(isalpha(c)) return identifier(lexer);
   if(isdigit(c)) return number(lexer);
+
+  switch(c){
+    case('('): return makeToken(lexer, TOKEN_LEFTBRACKET);
+    case(')'): return makeToken(lexer, TOKEN_RIGHTBRACKET);
+    case('{'): return makeToken(lexer, TOKEN_LEFTCURLY);
+    case('}'): return makeToken(lexer, TOKEN_RIGHTCURLY);
+    case(','): return makeToken(lexer, TOKEN_COMMA);
+    case('.'):
+      if(match(lexer, '&')) return makeToken(lexer, TOKEN_DOTAMPERSAND);
+      else if(match(lexer, '|')) return makeToken(lexer, TOKEN_DOTPIPE);
+    case(':'): return makeToken(lexer, TOKEN_COLON);
+    case(';'): return makeToken(lexer, TOKEN_SEMICOLON);
+  }
 
   return NULL;
 }
