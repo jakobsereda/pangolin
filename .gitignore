@@ -4,7 +4,7 @@ bin/
 #vscode folder
 .vscode/*
 
-#swp files
-.lexer.c.swp
-.lexer.c.un~
-lexer.c~
+#vim files
+*~
+*.swp
+*.swo
