@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 typedef enum {
     // keywords
@@ -68,7 +69,8 @@ typedef enum {
 
     TOKEN_IDENTIFIER,
     TOKEN_NUMBER,
-    TOKEN_ERROR
+    TOKEN_ERROR,
+    TOKEN_EOF               //End of file
 } TokenType;
 
 //Tokenizer
@@ -170,7 +172,7 @@ static Token* makeToken(Lexer* lexer, TokenType type) {
 }
 
 /**
- * Lets the lexer ignore whitespace and comments.
+ * Allows the lexer to ignore whitespace and comments.
  */
 static void ignoreWhitespace(Lexer* lexer){
     while(true){
@@ -212,6 +214,48 @@ static TokenType checkKeyword(Lexer* lexer, int start, int length, const char* r
 /**
  * Checks the type of identiifer that a token is.
  */
-static TokenType checkIdentifier (){
-	return 0;
+static TokenType checkIdentifierType (Lexer* lexer){
+  int length = lexer -> current - lexer -> start;
+  char* text = (char*)malloc(length + 1);
+  memcpy(text, lexer -> start, length);
+    text[length] = '\0';
+    
+    for (int i = 0; keywords[i].keyword != NULL; i++){
+        if (strcmp(text, keywords[i].keyword) == 0){
+            free(text);
+            return keywords[i].type;
+        }
+    }
+    
+    free(text);
+    return TOKEN_IDENTIFIER;
+}
+
+static Token* identifier(Lexer *lexer){
+  while(isalnum(peek(lexer)) || peek(lexer) == '_'){
+    lexer -> column++;
+  }
+  return makeToken(lexer, checkIdentifierType(lexer));
+}
+
+static Token* number(Lexer* lexer){
+  while(isdigit(peek(lexer))){
+    lexer -> column++;
+  }
+  return makeToken(lexer, TOKEN_NUMBER);
+}
+
+Token* scanToken(Lexer* lexer){
+  ignoreWhitespace(lexer);
+  lexer -> start = lexer -> current;
+  
+  if(atEnd(lexer)) return makeToken(lexer, TOKEN_EOF);
+
+  lexer -> column++;
+  char c = *lexer -> current++;
+
+  if(isalpha(c) || c == '_') return identifier(lexer);
+  if(isdigit(c)) return number(lexer);
+
+  return NULL;
 }
