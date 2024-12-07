@@ -171,6 +171,15 @@ static Token* makeToken(Lexer* lexer, TokenType type) {
     return token;
 }
 
+static Token* errorToken(Lexer* lexer, const char* message) {
+    Token* token = (Token*)malloc(sizeof(Token));
+    token -> type = TOKEN_ERROR;
+    token -> lexeme = strdup(message);
+    token -> line = lexer -> line;
+    token -> column = lexer -> column;
+    return token;
+}
+
 /**
  * Allows the lexer to ignore whitespace and comments.
  */
@@ -266,9 +275,44 @@ Token* scanToken(Lexer* lexer){
     case('.'):
       if(match(lexer, '&')) return makeToken(lexer, TOKEN_DOTAMPERSAND);
       else if(match(lexer, '|')) return makeToken(lexer, TOKEN_DOTPIPE);
+      else return makeToken(lexer, TOKEN_DOT);
     case(':'): return makeToken(lexer, TOKEN_COLON);
     case(';'): return makeToken(lexer, TOKEN_SEMICOLON);
+  
+    case('='): return makeToken(lexer, match(lexer, '=') ? TOKEN_EE : TOKEN_EQ);
+    case('<'):
+      if(match(lexer, '=')) return makeToken(lexer, TOKEN_LEQ);
+      else if(match(lexer, '<')) 
+        return makeToken(lexer, match(lexer, '=') ? TOKEN_LEFTSHIFTEQUALS : TOKEN_LEFTSHIFT);
+      else return makeToken(lexer, TOKEN_LT);
+    case('>'):
+      if(match(lexer, '=')) return makeToken(lexer, TOKEN_GEQ);
+      else if(match(lexer, '>')) 
+        return makeToken(lexer, match(lexer, '=') ? TOKEN_RIGHTSHIFTEQUALS : TOKEN_RIGHTSHIFT);
+      else return makeToken(lexer, TOKEN_GT);
+    case('~'):
+      if (match(lexer, '=')) return makeToken(lexer, TOKEN_TILDEEQUALS);
+      if (match(lexer, '&')) return makeToken(lexer, TOKEN_TILDEAMPERSAND);
+      if (match(lexer, '|')) return makeToken(lexer, TOKEN_TILDEPIPE);
+          return makeToken(lexer, TOKEN_TILDE);
+    case '+':
+      if (match(lexer, '=')) return makeToken(lexer, TOKEN_PLUSEQUALS);
+      if (match(lexer, '+')) return makeToken(lexer, TOKEN_INCREMENT);
+      return makeToken(lexer, TOKEN_PLUS);
+    case '-':
+      if (match(lexer, '=')) return makeToken(lexer, TOKEN_MINUSEQUALS);
+      if (match(lexer, '-')) return makeToken(lexer, TOKEN_DECREMENT);
+      return makeToken(lexer, TOKEN_MINUS);
+    case '*':
+      return makeToken(lexer, match(lexer, '=') ? TOKEN_MULTIPLYEQUALS : TOKEN_MULTIPLY); 
+    case '/':
+      return makeToken(lexer, match(lexer, '=') ? TOKEN_DIVIDEEQUALS : TOKEN_DIVIDE);
+    case '%':
+      return makeToken(lexer, match(lexer, '=') ? TOKEN_MODEQUALS : TOKEN_MOD);
+    case '&':
+      return makeToken(lexer, match(lexer, '=') ? TOKEN_AMPERSANDEQUALS : TOKEN_AMPERSAND);
+    case '|':
+      return makeToken(lexer, match(lexer, '=') ? TOKEN_XOREQUALS : TOKEN_XOR);
   }
-
-  return NULL;
+  return errorToken(lexer, "Unexpected token");
 }
