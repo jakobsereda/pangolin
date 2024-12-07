@@ -295,23 +295,23 @@ Token* scanToken(Lexer* lexer){
       if (match(lexer, '&')) return makeToken(lexer, TOKEN_TILDEAMPERSAND);
       if (match(lexer, '|')) return makeToken(lexer, TOKEN_TILDEPIPE);
           return makeToken(lexer, TOKEN_TILDE);
-    case '+':
+    case ('+'):
       if (match(lexer, '=')) return makeToken(lexer, TOKEN_PLUSEQUALS);
       if (match(lexer, '+')) return makeToken(lexer, TOKEN_INCREMENT);
       return makeToken(lexer, TOKEN_PLUS);
-    case '-':
+    case ('-'):
       if (match(lexer, '=')) return makeToken(lexer, TOKEN_MINUSEQUALS);
       if (match(lexer, '-')) return makeToken(lexer, TOKEN_DECREMENT);
       return makeToken(lexer, TOKEN_MINUS);
-    case '*':
+    case ('*'):
       return makeToken(lexer, match(lexer, '=') ? TOKEN_MULTIPLYEQUALS : TOKEN_MULTIPLY); 
-    case '/':
+    case ('/'):
       return makeToken(lexer, match(lexer, '=') ? TOKEN_DIVIDEEQUALS : TOKEN_DIVIDE);
-    case '%':
+    case ('%'):
       return makeToken(lexer, match(lexer, '=') ? TOKEN_MODEQUALS : TOKEN_MOD);
-    case '&':
+    case ('&'):
       return makeToken(lexer, match(lexer, '=') ? TOKEN_AMPERSANDEQUALS : TOKEN_AMPERSAND);
-    case '|':
+    case ('|'):
       return makeToken(lexer, match(lexer, '=') ? TOKEN_XOREQUALS : TOKEN_XOR);
   }
   return errorToken(lexer, "Unexpected token");
