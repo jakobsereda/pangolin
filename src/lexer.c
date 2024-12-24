@@ -3,92 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
-
-typedef enum {
-    // keywords
-    TOKEN_LET,
-    TOKEN_DEF,
-    TOKEN_PERCHANCE,
-    TOKEN_MAYHAPS,
-    TOKEN_PERHAPS,
-    TOKEN_WHIRL,
-    TOKEN_TWIRL,
-    TOKEN_IN,
-    TOKEN_TRUE,
-    TOKEN_FALSE,
-
-    //operators
-    TOKEN_TILDE,            //~
-    TOKEN_PLUS,             //+
-    TOKEN_MINUS,            //-
-    TOKEN_MULTIPLY,         //*
-    TOKEN_DIVIDE,           // /
-    TOKEN_MOD,              //%
-    TOKEN_LEFTSHIFT,        //<<
-    TOKEN_RIGHTSHIFT,       //>>
-    TOKEN_AMPERSAND,        //&
-    TOKEN_PIPE,             //|
-    TOKEN_XOR,              //^
-    TOKEN_DOTAMPERSAND,     //.&
-    TOKEN_DOTPIPE,          //.|
-    TOKEN_TILDEAMPERSAND,   //~&
-    TOKEN_TILDEPIPE,        //~|
-    TOKEN_INCREMENT,        //++
-    TOKEN_DECREMENT,        //--
-
-    //assignments
-    TOKEN_TILDEEQUALS,      //~=
-    TOKEN_PLUSEQUALS,       //+=
-    TOKEN_MINUSEQUALS,      //-=
-    TOKEN_MULTIPLYEQUALS,   //*=
-    TOKEN_DIVIDEEQUALS,     // /=
-    TOKEN_MODEQUALS,        //%=
-    TOKEN_AMPERSANDEQUALS,  //&=
-    TOKEN_PIPEEQUALS,       //|=
-    TOKEN_XOREQUALS,        //^=
-    TOKEN_RIGHTSHIFTEQUALS, //>>=
-    TOKEN_LEFTSHIFTEQUALS,  //<<=
-
-    //comparisons
-    TOKEN_EE,               //==
-    TOKEN_GEQ,              //>=
-    TOKEN_LEQ,              //<=
-    TOKEN_LT,               //<
-    TOKEN_GT,               //>
-
-    //punctuation
-    TOKEN_COLON,            //:
-    TOKEN_SEMICOLON,        //;
-    TOKEN_COMMA,            //,
-    TOKEN_DOT,              //.
-    TOKEN_LEFTBRACKET,      //(
-    TOKEN_RIGHTBRACKET,     //)
-    TOKEN_LEFTCURLY,        //{
-    TOKEN_RIGHTCURLY,       //}
-    TOKEN_EQ,               //=
-
-    TOKEN_IDENTIFIER,
-    TOKEN_NUMBER,
-    TOKEN_ERROR,
-    TOKEN_EOF               //End of file
-} TokenType;
-
-//Tokenizer
-typedef struct {
-    TokenType type;
-    char* lexeme;
-    int line;
-    int column;
-} Token;
-
-//Lexer
-typedef struct{
-    const char* source;
-    const char* start;
-    const char* current;
-    int line;
-    int column;
-} Lexer;
+#include "../include/lexer.h"
 
 //Keywords
 typedef struct{
@@ -156,8 +71,6 @@ static bool match (Lexer* lexer, char expected){
 
 /**
  * Creates a token from the current lexer.
- * 
- * Ryan notes: learn more about malloc and memory
  */
 static Token* makeToken(Lexer* lexer, TokenType type) {
     Token* token = (Token*)malloc(sizeof(Token));
@@ -190,17 +103,21 @@ static void ignoreWhitespace(Lexer* lexer){
             case ' ': 
             case '\r':
             case '\t':
+                lexer -> current++;
                 lexer -> column++;
                 break;
             case '\n':
+                lexer -> current++;
                 lexer -> line++;
                 lexer -> column = 1;
                 lexer -> column++;
                 break;
             case '|':
                 if(nextPeek(lexer) == '|')
-                    while(peek(lexer) != '\n' && !atEnd(lexer))
+                    while(peek(lexer) != '\n' && !atEnd(lexer)){
+                        lexer -> current++;
                         lexer -> column++;
+                    }
                 else
                     return;
                 break;
@@ -242,6 +159,7 @@ static TokenType checkIdentifierType (Lexer* lexer){
 
 static Token* identifier(Lexer *lexer){
   while(isalnum(peek(lexer))){
+    lexer -> current++;
     lexer -> column++;
   }
   return makeToken(lexer, checkIdentifierType(lexer));
@@ -249,6 +167,7 @@ static Token* identifier(Lexer *lexer){
 
 static Token* number(Lexer* lexer){
   while(isdigit(peek(lexer))){
+    lexer -> current++;
     lexer -> column++;
   }
   return makeToken(lexer, TOKEN_NUMBER);

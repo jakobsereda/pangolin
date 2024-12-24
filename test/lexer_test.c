@@ -73,7 +73,6 @@ void testComparisons() {
 void testIdentifiersAndNumbers() {
     printf("Testing identifiers and numbers...\n");
     testSingleToken("variable123", TOKEN_IDENTIFIER, "variable123");
-   // testSingleToken("_test", TOKEN_IDENTIFIER, "_test");
     testSingleToken("123", TOKEN_NUMBER, "123");
     testSingleToken("42", TOKEN_NUMBER, "42");
 }
