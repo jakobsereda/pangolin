@@ -1,0 +1,19 @@
+letter     = "a" | ... | "z" | "A" | ... | "Z" ;
+digit      = "0" | ... | "9" ;
+
+number     = digit { digit } ;
+
+factor     = number
+           | "(" expression ")"
+           | "-" factor 
+           ;
+
+term       = factor { "*" factor | "/" factor }
+           ;
+
+expression = term { "+" term | "-" term }
+           ;
+
+
+
+http://robotics.duke.edu/~ola/courses/cps149/problems/week3/ebnf.html
