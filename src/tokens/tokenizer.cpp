@@ -1,28 +1,28 @@
 #include "tokenizer.hpp"
 
-Lexer::Lexer (const std::string& input) : input(input), pos(0) {}
+Tokenizer::Tokenizer(const std::string& input) : input(input), pos(0) {}
 
-std::string Lexer::readNumber() {
+std::string Tokenizer::readNumber() {
     size_t start = pos;
-    while (pos < input.length() && std::isdigit(input[pos])){
+    while (pos < input.length() && std::isdigit(input[pos])) {
         ++pos;
     }
     return input.substr(start, pos - start);
 }
 
-std::vector<Token> Lexer::tokenize() {
+std::vector<Token> Tokenizer::tokenize() {
     std::vector<Token> tokens;
 
-    while(pos < input.length()){
+    while (pos < input.length()) {
         char current = input[pos];
 
-        if(std::isspace(current)){
+        if (std::isspace(current)) {
             ++pos;
             continue;
         }
 
         // what hte sigma
-        if(std::isdigit(current)){
+        if (std::isdigit(current)) {
             tokens.push_back(Token{TokenType::NUMBER, readNumber()});
         } else if (current == '+') {
             tokens.push_back(Token{TokenType::PLUS, "+"});

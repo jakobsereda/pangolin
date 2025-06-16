@@ -20,9 +20,9 @@ struct Token {
     std::string literal;
 };
 
-class Lexer {
+class Tokenizer {
 public:
-    Lexer(const std::string& input);
+    Tokenizer(const std::string& input);
     std::vector<Token> tokenize();
     
 private:
