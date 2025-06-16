@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 
-#include "lexer.hpp"
+#include "tokens/tokenizer.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -11,9 +11,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // add flags
-
-    // TODO: learn about braces
     std::ifstream file { argv[1] };
     std::string data {
         std::istreambuf_iterator<char>(file),
@@ -21,12 +18,8 @@ int main(int argc, char *argv[])
     };
     file.close();
 
-    // lexer object instantiate
-    // lexer.lex(input)
-
     Lexer l(data);
     std::vector<Token> tokens = l.tokenize();
-    
     
     for (auto t : tokens) {
         switch (t.type) {

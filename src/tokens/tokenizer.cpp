@@ -1,4 +1,4 @@
-#include "lexer.hpp"
+#include "tokenizer.hpp"
 
 Lexer::Lexer (const std::string& input) : input(input), pos(0) {}
 
