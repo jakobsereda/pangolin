@@ -26,6 +26,10 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 $(TEST_TARGET): $(TEST_MAIN) $(TEST_SRCS)
 	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -o $@ $^
 
+test: $(TEST_TARGET)
+	@echo "Running tests..."
+	@./$(TEST_TARGET)
+
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET) $(TEST_TARGET)
 
