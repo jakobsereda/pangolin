@@ -1,7 +1,7 @@
 CXX = g++
-CXXFLAGS = -std=c++14 -Wall -Wextra -g
+CXXFLAGS = -std=c++23 -Wall -Wextra -g
 
-SOURCES = main.cpp lexer.cpp parser.cpp
+SOURCES = src/main.cpp src/lexer.cpp src/parser.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 TARGET = calculator
 
