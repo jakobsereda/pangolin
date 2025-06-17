@@ -1,19 +1,36 @@
-CXX = g++
-CXXFLAGS = -std=c++23 -Wall -Wextra -g
+CXX         = g++
+CXXFLAGS    = -std=c++23 -Wall -Wextra -g
 
-SOURCES = src/main.cpp src/lexer.cpp src/parser.cpp
-OBJECTS = $(SOURCES:.cpp=.o)
-TARGET = calculator
+SRC_DIR     = src
+TEST_DIR    = test
+BUILD_DIR   = build
+INC_DIR     = $(TEST_DIR)
+
+SRCS        = $(shell find $(SRC_DIR) -name '*.cpp')
+OBJS        = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(subst $(SRC_DIR)/, , $(SRCS)))
+TARGET      = pangolin
+
+TEST_MAIN   = $(TEST_DIR)/test_main.cpp
+TEST_SRCS   = $(filter-out $(TEST_MAIN), $(wildcard $(TEST_DIR)/test_*.cpp))
+TEST_TARGET = run_tests
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
+$(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-%.o: %.cpp
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-clean:
-	rm -f $(OBJECTS) $(TARGET)
+$(TEST_TARGET): $(TEST_MAIN) $(TEST_SRCS)
+	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -o $@ $^
 
-.PHONY: all clean
+test: $(TEST_TARGET)
+	@echo "Running tests..."
+	@./$(TEST_TARGET)
+
+clean:
+	rm -rf $(BUILD_DIR) $(TARGET) $(TEST_TARGET)
+
+.PHONY: all test clean

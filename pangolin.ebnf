@@ -1,19 +1,47 @@
-letter     = "a" | ... | "z" | "A" | ... | "Z" ;
-digit      = "0" | ... | "9" ;
+program             = { statement }
+                    ;
 
-number     = digit { digit } ;
+statement           = assignment | expression
+                    ;
 
-factor     = number
-           | "(" expression ")"
-           | "-" factor 
-           ;
+assignment          = "let" identifier "=" expression
+                    ;
 
-term       = factor { "*" factor | "/" factor }
-           ;
+expression          = bitwise_or_expr
+                    ;
 
-expression = term { "+" term | "-" term }
-           ;
+bitwise_or_expr     = bitwise_xor_expr { "|" bitwise_xor_expr }
+                    ;
 
+bitwise_xor_expr    = bitwise_and_expr { "^" bitwise_and_expr }
+                    ;
 
+bitwise_and_expr    = additive_expr { "&" additivie_expr }
+                    ;
 
-http://robotics.duke.edu/~ola/courses/cps149/problems/week3/ebnf.html
+additive_expr       = multiplicative_expr { ( "+" | "-" ) multiplicative_expr }
+                    ;
+
+multiplicative_expr = unary_expr { ( "*" | "/" | "%" ) unary_expr }
+                    ;
+
+unary_expr          = [ "~" | "-" ] primary
+                    ;
+
+primary_expr        = integer 
+                    | identifier 
+					| "(" expression ")"
+                    ;
+
+identifier          = letter { letter | digit | "_" }
+                    ;
+
+integer             = digit { digit }
+                    ;
+
+letter              = "a" | ... | "z"
+                    | "A" | ... | "Z"
+	                ;
+
+digit               = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+                    ;
