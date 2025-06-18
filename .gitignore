@@ -1,5 +1,5 @@
 # build dir
-bin/
+build/
 
 #vscode folder
 .vscode/*
@@ -8,3 +8,6 @@ bin/
 *~
 *.swp
 *.swo
+
+#pangolin executable
+pangolin
