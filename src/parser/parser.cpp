@@ -51,7 +51,7 @@ bool Parser::check(TokenType type) const {
  * @return true if current token is END token, false otherwise
  */
 bool Parser::isAtEnd() const {
-    return peek().type == TokenType::END;
+    return peek().type == TokenType::Invalid;
 }
 
 /**
@@ -75,7 +75,7 @@ std::unique_ptr<ASTNode> Parser::parse() {
 std::unique_ptr<ASTNode> Parser::expression() {
     auto expr = term();
 
-    while (match(TokenType::PLUS) || match(TokenType::MINUS)) {
+    while (match(TokenType::Plus) || match(TokenType::Minus)) {
         Token op = tokens[current - 1];
         auto right = term();
         expr = std::make_unique<BinaryOpNode>(
@@ -95,7 +95,7 @@ std::unique_ptr<ASTNode> Parser::expression() {
 std::unique_ptr<ASTNode> Parser::term() {
     auto expr = unary();
 
-    while (match(TokenType::MULTIPLY) || match(TokenType::DIVIDE)) {
+    while (match(TokenType::Multiply) || match(TokenType::Divide)) {
         Token op = tokens[current - 1];
         auto right = unary();
         expr = std::make_unique<BinaryOpNode>(
@@ -113,7 +113,7 @@ std::unique_ptr<ASTNode> Parser::term() {
  * @return AST node representing unary expression or primary expression
  */
 std::unique_ptr<ASTNode> Parser::unary() {
-    if (match(TokenType::MINUS)) {
+    if (match(TokenType::Minus)) {
         auto expr = unary();
         return std::make_unique<UnaryMinusNode>(std::move(expr));
     }
@@ -131,15 +131,15 @@ std::unique_ptr<ASTNode> Parser::unary() {
  * @return AST node representing a number or parenthesized expression
  */
 std::unique_ptr<ASTNode> Parser::primary() {
-    if (match(TokenType::NUMBER)) {
+    if (match(TokenType::Integer)) {
         Token numToken = tokens[current - 1];
         double value = std::stod(numToken.literal);
         return std::make_unique<NumberNode>(value);
     }
 
-    if (match(TokenType::LPAREN)) {
+    if (match(TokenType::LParen)) {
         auto expr = expression();
-        if (!match(TokenType::RPAREN)) {
+        if (!match(TokenType::RParen)) {
             throw std::runtime_error("Expected ')' after expression");
         }
         return expr;

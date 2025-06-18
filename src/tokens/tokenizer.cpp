@@ -1,53 +1,96 @@
 #include "tokenizer.hpp"
 
-Tokenizer::Tokenizer(const std::string& input) : input(input), pos(0) {}
-
-std::string Tokenizer::readNumber() {
-    size_t start = pos;
-    while (pos < input.length() && std::isdigit(input[pos])) {
-        ++pos;
-    }
-    return input.substr(start, pos - start);
-}
-
-std::vector<Token> Tokenizer::tokenize() {
+std::vector<Token> Tokenizer::tokenize()
+{
     std::vector<Token> tokens;
 
-    while (pos < input.length()) {
-        char current = input[pos];
+    while (!is_done()) {
+        char curr = peek();
 
-        if (std::isspace(current)) {
-            ++pos;
+        if (std::isspace(curr)) {
+            eat();
             continue;
         }
 
-        // what hte sigma
-        if (std::isdigit(current)) {
-            tokens.push_back(Token{TokenType::NUMBER, readNumber()});
-        } else if (current == '+') {
-            tokens.push_back(Token{TokenType::PLUS, "+"});
-            ++pos;
-        } else if (current == '-') {
-            tokens.push_back(Token{TokenType::MINUS, "-"});
-            ++pos;
-        } else if (current == '*') {
-            tokens.push_back(Token{TokenType::MULTIPLY, "*"});
-            ++pos;
-        } else if (current == '/') {
-            tokens.push_back(Token{TokenType::DIVIDE, "/"});
-            ++pos;
-        } else if (current == '(') {
-            tokens.push_back(Token{TokenType::LPAREN, "("});
-            ++pos;
-        } else if (current == ')') {
-            tokens.push_back(Token{TokenType::RPAREN, ")"});
-            ++pos;
-        } else {
-            tokens.push_back(Token{TokenType::INVALID, std::string(1, current)});
-            ++pos;
-        }
-    }
+		if (std::isalpha(curr)) {
+			std::string ident = read_till([](char c) {
+				return !std::isalnum(c) && c != '_';
+			});
 
-    tokens.push_back(Token{TokenType::END, ""});
+			if (ident == "let") {
+				tokens.push_back({ TokenType::Let, ident, row, col });
+			} else {
+				tokens.push_back({ TokenType::Identifier, ident, row, col });
+			}
+
+			continue;
+		}
+
+		if (std::isdigit(curr)) {
+			std::string num = read_till([](char c) {
+				return !std::isdigit(c);
+			});
+
+			tokens.push_back(Token { TokenType::Integer, num, row, col });
+			continue;
+		}
+
+		switch (curr) {
+			case '=': tokens.push_back({ TokenType::Equals,   "=", row, col }); break;
+			case '+': tokens.push_back({ TokenType::Plus,     "+", row, col }); break;
+			case '-': tokens.push_back({ TokenType::Minus,    "-", row, col }); break;
+			case '*': tokens.push_back({ TokenType::Multiply, "*", row, col }); break;
+			case '/': tokens.push_back({ TokenType::Divide,   "/", row, col }); break;
+			case '%': tokens.push_back({ TokenType::Modulus,  "%", row, col }); break;
+			case '&': tokens.push_back({ TokenType::BAnd,     "&", row, col }); break;
+			case '|': tokens.push_back({ TokenType::BOr,      "|", row, col }); break;
+			case '^': tokens.push_back({ TokenType::BXor,     "^", row, col }); break;
+			case '~': tokens.push_back({ TokenType::BNot,     "~", row, col }); break;
+			case '(': tokens.push_back({ TokenType::LParen,   "(", row, col }); break;
+			case ')': tokens.push_back({ TokenType::RParen,   ")", row, col }); break;
+			default:  tokens.push_back({ TokenType::Invalid,  std::string(1, curr), row, col });
+		}
+
+		eat();
+	}
+
     return tokens;
+}
+
+std::string Tokenizer::read_till(std::function<bool(char)> pred)
+{
+	std::string res;
+
+	while (!is_done()) {
+		char c = peek();
+		if (pred(c)) break;
+		res += eat();
+	}
+
+	return res;
+}
+
+bool Tokenizer::is_done()
+{
+	return pos >= content.size();
+}
+
+char Tokenizer::peek()
+{
+	return is_done() ? '\0' : content[pos];
+}
+
+char Tokenizer::eat()
+{
+	if (is_done()) return '\0';
+
+	char c = content[pos++];
+	if (c == '\n') {
+		row++;
+		col = 1;
+	} else {
+		col++;
+	}
+
+	return c;
 }

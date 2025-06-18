@@ -2,32 +2,25 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 
-enum class TokenType {
-    NUMBER,
-    PLUS,
-    MINUS,
-    MULTIPLY,
-    DIVIDE,
-    LPAREN,
-    RPAREN,
-    END,
-    INVALID
-};
-
-struct Token {
-    TokenType   type;
-    std::string literal;
-};
+#include "token.hpp"
 
 class Tokenizer {
 public:
-    Tokenizer(const std::string& input);
-    std::vector<Token> tokenize();
-    
-private:
-    size_t pos;
-    std::string input;
+    Tokenizer(const std::string &content)
+		: content(content), pos(0), row(1), col(1) {}
 
-    std::string readNumber();
+	std::vector<Token> tokenize();
+
+private:
+	std::string read_till(std::function<bool(char)> pred);
+	bool        is_done();
+	char        peek();
+	char        eat();
+
+	std::string content;
+	std::size_t pos;
+	std::size_t row;
+	std::size_t col;
 };

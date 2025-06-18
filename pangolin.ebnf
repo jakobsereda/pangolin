@@ -30,7 +30,7 @@ unary_expr          = [ "~" | "-" ] primary
 
 primary_expr        = integer 
                     | identifier 
-					| "(" expression ")"
+                    | "(" expression ")"
                     ;
 
 identifier          = letter { letter | digit | "_" }
