@@ -1,9 +1,51 @@
+#include "tokens/tokenizer.hpp"
+#include "parser/parser.hpp"
+#include "parser/ast.hpp"
 #include <iostream>
-#include <fstream>
 #include <string>
 
-#include "tokens/tokenizer.hpp"
+/**
+ * I have replaced the main file for now, so we can interact with our code in the cli
+ */
+int main() {
+    std::string input;
+    
+    std::cout << "Simple Expression Calculator" << std::endl;
+    std::cout << "Enter expressions (or 'quit' to exit):" << std::endl;
+    
+    while (true) {
+        std::cout << "> ";
+        std::getline(std::cin, input);
+        
+        if (input == "quit" || input == "exit") {
+            break;
+        }
+        
+        if (input.empty()) {
+            continue;
+        }
+        
+        try {
+            Tokenizer tokenizer(input);
+            auto tokens = tokenizer.tokenize();
+            
+            Parser parser(tokens);
+            auto ast = parser.parse();
+            
+            if (ast) {
+                double result = ast->evaluate();
+                std::cout << "Result: " << result << std::endl;
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+    }
+    
+    std::cout << "Goodbye!" << std::endl;
+    return 0;
+}
 
+/*
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
@@ -37,3 +79,4 @@ int main(int argc, char *argv[])
     
     return 0;
 }
+ */
