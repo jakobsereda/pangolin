@@ -3,37 +3,41 @@
 #include <string>
 
 #include "tokens/tokenizer.hpp"
+#include "parser/parser.hpp"
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2) {
-        std::cerr << "USAGE: pangolin <filepath>" << '\n';
-        return 1;
-    }
+	if (argc != 2) {
+		std::cerr << "USAGE: pangolin <filepath>" << '\n';
+		return 1;
+	}
 
-    std::ifstream file { argv[1] };
-    std::string data {
-        std::istreambuf_iterator<char>(file),
-        std::istreambuf_iterator<char>()
-    };
-    file.close();
+	std::ifstream file { argv[1] };
+	std::string data {
+		std::istreambuf_iterator<char>(file),
+		std::istreambuf_iterator<char>()
+	};
+	file.close();
 
-    Tokenizer tokenizer(data);
-    std::vector<Token> tokens = tokenizer.tokenize();
-    
-    for (auto t : tokens)
+	Tokenizer tokenizer(data);
+	std::vector<Token> tokens = tokenizer.tokenize();
+
+	// print out tokens
+	for (auto t : tokens)
 		std::cout << "Token: " << static_cast<int>(t.type) << "; Literal: " << t.literal << "; row: " << t.row << "; col: " << t.col << ";\n";
-    
-    return 0;
+	std::cout << "\n";
+
+	Parser p(tokens);
+	std::unique_ptr<ASTNode> ast = p.parse_program();
+
+	// print out ast
+	ast->pretty_print();
+
+	return 0;
 }
 
 /**
  * I have replaced the main file for now, so we can interact with our code in the cli
- *
- * I'm commenting this out but you can feel free to uncomment it if you want to use it
- * to test. Really we should probably write unit tests before we write any code because
- * eventually things will get too big for cli testing like this (unless we are writing an
- * interpreter instead of a compiler, but regardless tests are good).
  */
 // int main() {
 //     std::string input;

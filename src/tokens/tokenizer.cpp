@@ -2,15 +2,15 @@
 
 std::vector<Token> Tokenizer::tokenize()
 {
-    std::vector<Token> tokens;
+	std::vector<Token> tokens;
 
-    while (!is_done()) {
-        char curr = peek();
+	while (!is_done()) {
+		char curr = peek();
 
-        if (std::isspace(curr)) {
-            eat();
-            continue;
-        }
+		if (std::isspace(curr)) {
+			eat();
+			continue;
+		}
 
 		if (std::isalpha(curr)) {
 			std::string ident = read_till([](char c) {
@@ -54,7 +54,7 @@ std::vector<Token> Tokenizer::tokenize()
 		eat();
 	}
 
-    return tokens;
+	return tokens;
 }
 
 std::string Tokenizer::read_till(std::function<bool(char)> pred)
@@ -70,12 +70,12 @@ std::string Tokenizer::read_till(std::function<bool(char)> pred)
 	return res;
 }
 
-bool Tokenizer::is_done()
+bool Tokenizer::is_done() const
 {
 	return pos >= content.size();
 }
 
-char Tokenizer::peek()
+char Tokenizer::peek() const
 {
 	return is_done() ? '\0' : content[pos];
 }

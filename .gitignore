@@ -1,13 +1,16 @@
 # build dir
 build/
 
-#vscode folder
+# vscode folder
 .vscode/*
 
-#vim files
+# vim files
 *~
 *.swp
 *.swo
 
-#pangolin executable
+# pangolin executable
 pangolin
+
+# test executable
+run_tests

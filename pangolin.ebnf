@@ -1,7 +1,8 @@
 program             = { statement }
                     ;
 
-statement           = assignment | expression
+statement           = assignment
+                    | expression
                     ;
 
 assignment          = "let" identifier "=" expression
@@ -16,7 +17,7 @@ bitwise_or_expr     = bitwise_xor_expr { "|" bitwise_xor_expr }
 bitwise_xor_expr    = bitwise_and_expr { "^" bitwise_and_expr }
                     ;
 
-bitwise_and_expr    = additive_expr { "&" additivie_expr }
+bitwise_and_expr    = additive_expr { "&" additive_expr }
                     ;
 
 additive_expr       = multiplicative_expr { ( "+" | "-" ) multiplicative_expr }

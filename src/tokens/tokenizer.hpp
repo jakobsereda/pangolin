@@ -8,15 +8,15 @@
 
 class Tokenizer {
 public:
-    Tokenizer(const std::string &content)
-		: content(content), pos(0), row(1), col(1) {}
+	Tokenizer(std::string content)
+		: content(std::move(content)), pos(0), row(1), col(1) {}
 
 	std::vector<Token> tokenize();
 
 private:
 	std::string read_till(std::function<bool(char)> pred);
-	bool        is_done();
-	char        peek();
+	bool        is_done() const;
+	char        peek() const;
 	char        eat();
 
 	std::string content;
