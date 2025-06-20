@@ -18,6 +18,7 @@ private:
 	bool        is_done() const;
 	char        peek() const;
 	char        eat();
+	char		next_char() const;
 
 	std::string content;
 	std::size_t pos;

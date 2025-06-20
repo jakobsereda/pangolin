@@ -35,6 +35,36 @@ std::vector<Token> Tokenizer::tokenize()
 			continue;
 		}
 
+		// Handle multi-character comparion operators, such as '<='
+		if (curr == '<' || curr == '>' || curr == '=' || curr == '!') {
+			char next = next_char();
+			std::string op(1, curr);
+
+			if ((curr == '<' || curr == '>' || curr == '!') && next == '=') {
+				op += "=";
+				tokens.push_back({
+					curr == '<' ? TokenType::LessEqual :
+					curr == '>' ? TokenType :: GreaterEqual :
+					TokenType:: NotEqual, op, row, col
+				});
+				eat(); eat(); // eat curr and '='
+				continue;
+			} else if (curr == '=' && next == '=') {
+				op += '=';
+				tokens.push_back({ TokenType::EqualEqual, op, row, col });
+				eat(); eat(); // eat both '='
+				continue;
+			} else if (curr == '<') {
+				tokens.push_back({ TokenType::Less, op, row, col});
+				eat();
+				continue;
+			} else if (curr == '>') {
+				tokens.push_back({ TokenType::Greater, op, row, col });
+				eat();
+				continue;
+			}
+		}
+
 		switch (curr) {
 			case '=': tokens.push_back({ TokenType::Equals,   "=", row, col }); break;
 			case '+': tokens.push_back({ TokenType::Plus,     "+", row, col }); break;
@@ -78,6 +108,11 @@ bool Tokenizer::is_done() const
 char Tokenizer::peek() const
 {
 	return is_done() ? '\0' : content[pos];
+}
+
+char Tokenizer::next_char() const
+{
+	return (pos + 1 >= content.size()) ? '\0' : content[pos + 1];
 }
 
 char Tokenizer::eat()
