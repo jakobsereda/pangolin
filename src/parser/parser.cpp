@@ -104,7 +104,22 @@ std::unique_ptr<ASTNode> Parser::parse_assignment()
 
 std::unique_ptr<ASTNode> Parser::parse_expression()
 {
-	return parse_bitwise_or_expr();
+	return parse_comparison_expr();
+}
+
+std::unique_ptr<ASTNode> Parser::parse_comparison_expr()
+{
+	return parse_left_associative_binary_expr(
+		[this]() { return parse_bitwise_or_expr(); },
+		{
+			TokenType::Less,
+			TokenType::Greater,
+			TokenType::EqualEqual,
+			TokenType::NotEqual,
+			TokenType::LessEqual,
+			TokenType::GreaterEqual
+		}
+	);
 }
 
 std::unique_ptr<ASTNode> Parser::parse_bitwise_or_expr()
