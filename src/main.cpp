@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	std::unique_ptr<ASTNode> ast = p.parse_program();
 
 	// print out ast
-	ast->pretty_print();
+	// ast->pretty_print();
 
 	return 0;
 }

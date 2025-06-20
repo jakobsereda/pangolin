@@ -32,9 +32,14 @@ void UnaryOpNode::pretty_print(int level)
 
 void BinaryOpNode::pretty_print(int level)
 {
-	std::cout << build_indent(level) << "BINARY | op: " << op.literal << "\n";
-	left->pretty_print(level + 1);
-	right->pretty_print(level + 1);
+	std::string op_type = op.literal;
+    if (op_type == "<" || op_type == ">" || op_type == "==" ||
+        op_type == "!=" || op_type == "<=" || op_type == ">=")
+        std::cout << build_indent(level) << "BINARY (comparison) | op: " << op.literal << "\n";
+    else
+        std::cout << build_indent(level) << "BINARY | op: " << op.literal << "\n";
+    left->pretty_print(level + 1);
+    right->pretty_print(level + 1);
 }
 
 void ParenthesesNode::pretty_print(int level)
