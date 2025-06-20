@@ -11,6 +11,12 @@ assignment          = "let" identifier "=" expression
 expression          = bitwise_or_expr
                     ;
 
+comparison_expr     = bitwise_or_expr [ comparison_op bitwise_or_expr ]
+                    ;
+
+comparison_op       = "<" | ">" | "==" | "!=" | "<=" | ">="
+                    ;
+
 bitwise_or_expr     = bitwise_xor_expr { "|" bitwise_xor_expr }
                     ;
 

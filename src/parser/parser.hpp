@@ -34,6 +34,7 @@ private:
 	std::unique_ptr<ASTNode> parse_multiplicative_expr();
 	std::unique_ptr<ASTNode> parse_unary_expr();
 	std::unique_ptr<ASTNode> parse_primary_expr();
+	std::unique_ptr<ASTNode> parse_comparison_expr();
 
 	std::unique_ptr<ASTNode> parse_left_associative_binary_expr(
 		std::function<std::unique_ptr<ASTNode>()> next,
