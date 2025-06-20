@@ -11,3 +11,6 @@ build/
 
 #pangolin executable
 pangolin
+
+# test executable
+run_tests
