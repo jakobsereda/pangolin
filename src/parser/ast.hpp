@@ -1,58 +1,91 @@
 #pragma once
+
 #include <memory>
-#include <stdexcept>
 #include <vector>
 
+#include "../tokens/token.hpp"
+
 class ASTNode {
-    public:
-        virtual ~ASTNode() = default;
-        virtual double evaluate() const = 0;
+public:
+	virtual ~ASTNode() = default;
+	virtual void pretty_print(int level = 0) = 0;
 };
 
-// for number literal node
-class NumberNode : public ASTNode {
-private:
-    double value;
+class ProgramNode : public ASTNode {
 public:
-    NumberNode(double value) : value(value) {}
-    double evaluate() const override { return value; }
+	void pretty_print(int level) override;
+	void add_statement(std::unique_ptr<ASTNode> statement);
+
+private:
+	std::vector<std::unique_ptr<ASTNode>> statements;
 };
 
-// for binary operation nodes
-class BinaryOpNode: public ASTNode {
-private:
-    std::unique_ptr<ASTNode> left; // use smart pointer ( wow!)
-    std::unique_ptr<ASTNode> right;
-    char op;
+class LiteralNode : public ASTNode {
 public:
-    BinaryOpNode(std::unique_ptr<ASTNode> l, std::unique_ptr<ASTNode> r, char operation)
-        : left(std::move(l)),  right(std::move(r)), op(operation) {}
+	LiteralNode(Token value)
+		: value(value) {}
 
-    double evaluate() const override {
-        double l_val = left->evaluate();
-        double r_val = right->evaluate();
+	void pretty_print(int level) override;
 
-        switch(op){
-            case '+': return l_val + r_val;
-            case '-': return l_val - r_val;
-            case '*': return l_val * r_val;
-            case '/':
-                if(r_val == 0){
-                    throw std::runtime_error("Cannot divide by zero!");
-                } else {
-                    return l_val / r_val;
-                }
-            default:
-                throw std::runtime_error("Unknown operator!");
-        }
-    }
+private:
+	Token value;
 };
 
-// for -NUMBER
-class UnaryMinusNode : public ASTNode{
-private:
-    std::unique_ptr<ASTNode> operand;
+class UnaryOpNode : public ASTNode {
 public:
-    UnaryMinusNode(std::unique_ptr<ASTNode> o) : operand(std::move(o)) {}
-    double evaluate() const override { return -operand ->evaluate(); }
+	UnaryOpNode(Token op, std::unique_ptr<ASTNode> body)
+		: op(op), body(std::move(body)) {}
+
+	void pretty_print(int level) override;
+
+private:
+	Token                    op;
+	std::unique_ptr<ASTNode> body;
+};
+
+class BinaryOpNode : public ASTNode {
+public:
+	BinaryOpNode(Token op, std::unique_ptr<ASTNode> left, std::unique_ptr<ASTNode> right)
+		: op(op), left(std::move(left)),  right(std::move(right)) {}
+
+	void pretty_print(int level) override;
+
+private:
+	Token                    op;
+	std::unique_ptr<ASTNode> left;
+	std::unique_ptr<ASTNode> right;
+};
+
+class ParenthesesNode : public ASTNode {
+public:
+	ParenthesesNode(std::unique_ptr<ASTNode> body)
+		: body(std::move(body)) {}
+
+	void pretty_print(int level) override;
+
+private:
+	std::unique_ptr<ASTNode> body;
+};
+
+class AssignmentNode : public ASTNode {
+public:
+	AssignmentNode(Token name, std::unique_ptr<ASTNode> value)
+		: name(name), value(std::move(value)) {}
+
+	void pretty_print(int level) override;
+
+private:
+	Token                    name;
+	std::unique_ptr<ASTNode> value;
+};
+
+class ErrorNode : public ASTNode {
+public:
+	ErrorNode(std::string message)
+		: message(message) {}
+
+	void pretty_print(int level) override;
+
+private:
+	std::string message;
 };
