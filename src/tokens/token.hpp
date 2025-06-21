@@ -18,12 +18,16 @@ enum TokenType {
 	BNot,
 	LParen,
 	RParen,
+	LBrace,
+	RBrace,
 	Less,
 	Greater,
 	EqualEqual,
 	NotEqual,
 	LessEqual,
 	GreaterEqual,
+	If,
+	Else,
 	Invalid
 };
 

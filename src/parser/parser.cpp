@@ -74,9 +74,16 @@ std::unique_ptr<ASTNode> Parser::parse_program()
 
 std::unique_ptr<ASTNode> Parser::parse_statement()
 {
-	return check(TokenType::Let)
-		? parse_assignment()
-		: parse_expression();
+	if (check(TokenType::Let))
+		return parse_assignment();
+	
+	if (check(TokenType::If))
+		return parse_if_statement();
+	
+	if (check(TokenType::LBrace))
+		return parse_block();
+	
+	return parse_expression();
 }
 
 std::unique_ptr<ASTNode> Parser::parse_assignment()
@@ -100,6 +107,50 @@ std::unique_ptr<ASTNode> Parser::parse_assignment()
 	std::unique_ptr<ASTNode> value = parse_expression();
 
 	return std::make_unique<AssignmentNode>(ident, std::move(value));
+}
+
+std::unique_ptr<ASTNode> Parser::parse_if_statement()
+{
+    Token if_token = eat(); // consume 'if'
+
+    if (!match(TokenType::LParen))
+        return std::make_unique<ErrorNode>("Expected '(' after 'if'");
+
+    std::unique_ptr<ASTNode> condition = parse_expression();
+
+    if (!match(TokenType::RParen))
+        return std::make_unique<ErrorNode>("Expected ')' after if condition");
+
+    std::unique_ptr<ASTNode> then_branch = parse_statement();
+
+    std::unique_ptr<ASTNode> else_branch = nullptr;
+    if (match(TokenType::Else)) {
+        if (check(TokenType::If)) {
+            else_branch = parse_if_statement(); // Recursively parse 'else if'
+        } else {
+            else_branch = parse_statement(); // Regular else
+        }
+    }
+
+    return std::make_unique<IfNode>(std::move(condition), std::move(then_branch), std::move(else_branch));
+}
+
+std::unique_ptr<ASTNode> Parser::parse_block()
+{
+	if (!match(TokenType::LBrace))
+		return std::make_unique<ErrorNode>("Expected '{'");
+
+	auto block = std::make_unique<BlockNode>();
+
+	while (!check(TokenType::RBrace) && !is_done()) {
+		std::unique_ptr<ASTNode> statement = parse_statement();
+		block->add_statement(std::move(statement));
+	}
+
+	if (!match(TokenType::RBrace))
+		return std::make_unique<ErrorNode>("Expected '}'");
+
+	return block;
 }
 
 std::unique_ptr<ASTNode> Parser::parse_expression()

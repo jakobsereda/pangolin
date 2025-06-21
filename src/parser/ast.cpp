@@ -59,3 +59,29 @@ void ErrorNode::pretty_print(int level)
 {
 	std::cout << build_indent(level) << "ERROR | message: " << message << "\n";
 }
+
+void IfNode::pretty_print(int level)
+{
+    std::cout << build_indent(level) << "IF:\n";
+    std::cout << build_indent(level + 1) << "CONDITION:\n";
+    condition->pretty_print(level + 2);
+    std::cout << build_indent(level + 1) << "THEN:\n";
+    then_branch->pretty_print(level + 2);
+    if (else_branch) {
+        std::cout << build_indent(level + 1) << "ELSE:\n";
+        else_branch->pretty_print(level + 2);
+    }
+}
+
+void BlockNode::pretty_print(int level)
+{
+    std::cout << build_indent(level) << "BLOCK\n";
+    for (const auto& statement : statements) {
+        statement->pretty_print(level + 1);
+    }
+}
+
+void BlockNode::add_statement(std::unique_ptr<ASTNode> statement)
+{
+    statements.push_back(std::move(statement));
+}

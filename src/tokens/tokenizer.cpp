@@ -19,6 +19,10 @@ std::vector<Token> Tokenizer::tokenize()
 
 			if (ident == "let") {
 				tokens.push_back({ TokenType::Let, ident, row, col });
+			} else if (ident == "if") {
+				tokens.push_back({ TokenType::If, ident, row, col });
+			} else if (ident == "else") {
+				tokens.push_back({ TokenType::Else, ident, row, col });
 			} else {
 				tokens.push_back({ TokenType::Identifier, ident, row, col });
 			}
@@ -78,6 +82,8 @@ std::vector<Token> Tokenizer::tokenize()
 			case '~': tokens.push_back({ TokenType::BNot,     "~", row, col }); break;
 			case '(': tokens.push_back({ TokenType::LParen,   "(", row, col }); break;
 			case ')': tokens.push_back({ TokenType::RParen,   ")", row, col }); break;
+			case '{': tokens.push_back({ TokenType::LBrace,   "{", row, col }); break;
+			case '}': tokens.push_back({ TokenType::RBrace,   "}", row, col }); break;
 			default:  tokens.push_back({ TokenType::Invalid,  std::string(1, curr), row, col });
 		}
 

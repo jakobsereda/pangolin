@@ -79,6 +79,27 @@ private:
 	std::unique_ptr<ASTNode> value;
 };
 
+class IfNode : public ASTNode {
+public:
+	IfNode(std::unique_ptr<ASTNode> condition, std::unique_ptr<ASTNode> then_branch, std::unique_ptr<ASTNode> else_branch = nullptr) : condition(std::move(condition)), then_branch(std::move(then_branch)), else_branch(std::move(else_branch)) {}
+
+	void pretty_print(int level) override;
+
+private:
+	std::unique_ptr<ASTNode> condition;
+	std::unique_ptr<ASTNode> then_branch;
+	std::unique_ptr<ASTNode> else_branch; // optional ?
+};
+
+class BlockNode : public ASTNode {
+public:
+	void pretty_print(int level) override;
+	void add_statement(std::unique_ptr<ASTNode> statement);
+
+private:
+	std::vector<std::unique_ptr<ASTNode>> statements;
+};
+
 class ErrorNode : public ASTNode {
 public:
 	ErrorNode(std::string message)
