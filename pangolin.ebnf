@@ -3,6 +3,13 @@ program             = { statement }
 
 statement           = assignment
                     | expression
+                    | if_statement
+                    ;
+
+if_statement        = "if" "(" expression ")" block { "else" "if" "(" expression ")" block } [ "else" block ]
+                    ;
+
+block               = "{" { statement } "}"
                     ;
 
 assignment          = "let" identifier "=" expression
