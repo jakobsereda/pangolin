@@ -62,26 +62,20 @@ void ErrorNode::pretty_print(int level)
 
 void IfNode::pretty_print(int level)
 {
-    std::string indent(level * 2, ' ');
-    std::cout << indent << "IfNode:\n";
-    
-    std::cout << indent << "  Condition:\n";
+    std::cout << build_indent(level) << "IF:\n";
+    std::cout << build_indent(level + 1) << "CONDITION:\n";
     condition->pretty_print(level + 2);
-    
-    std::cout << indent << "  Then:\n";
+    std::cout << build_indent(level + 1) << "THEN:\n";
     then_branch->pretty_print(level + 2);
-    
     if (else_branch) {
-        std::cout << indent << "  Else:\n";
+        std::cout << build_indent(level + 1) << "ELSE:\n";
         else_branch->pretty_print(level + 2);
     }
 }
 
 void BlockNode::pretty_print(int level)
 {
-    std::string indent(level * 2, ' ');
-    std::cout << indent << "BlockNode:\n";
-    
+    std::cout << build_indent(level) << "BLOCK\n";
     for (const auto& statement : statements) {
         statement->pretty_print(level + 1);
     }
