@@ -4,6 +4,10 @@ program             = { statement }
 statement           = assignment
                     | expression
                     | if_statement
+                    | for_statement
+                    ;
+
+for_statement       = "for" "(" [ assignment | expression ] ";" [ expression ] ";" [ assignment | expression ] ")" block
                     ;
 
 if_statement        = "if" "(" expression ")" block { "else" "if" "(" expression ")" block } [ "else" block ]
