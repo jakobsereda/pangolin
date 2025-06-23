@@ -1,30 +1,13 @@
 #include "doctest.h"
+#include "../src/tokens/tokenizer.hpp"
 
-TEST_CASE("hello world test")
+TEST_CASE("comparison ops test")
 {
-    CHECK(1 + 1 == 2);
-}
-
-TEST_CASE("basic arithmetic operations")
-{
-    CHECK(2 * 3 == 6);
-    CHECK(5 - 2 == 3);
-    CHECK(8 / 2 == 4);
-    CHECK((2 + 3) * 2 == 10);
-}
-
-TEST_CASE("comparison operators")
-{
-    CHECK(3 < 5);
-    CHECK(10 > 2);
-    CHECK(7 == 7);
-    CHECK_FALSE(4 == 5);
-}
-
-TEST_CASE("edge cases")
-{
-    CHECK(0 + 0 == 0);
-    CHECK(-1 + 1 == 0);
-    CHECK(-5 * -2 == 10);
-    CHECK(1000000 + 1 == 1000001);
+    Tokenizer tokenizer("<> == <= >=");
+	std::vector<Token> tokens = tokenizer.tokenize();
+    CHECK(tokens[0].type == TokenType::Less);
+    CHECK(tokens[1].type == TokenType::Greater);
+    CHECK(tokens[2].type == TokenType::EqualEqual);
+    CHECK(tokens[3].type == TokenType::LessEqual);
+    CHECK(tokens[4].type == TokenType::GreaterEqual);
 }
