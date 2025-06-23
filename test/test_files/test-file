@@ -12,3 +12,5 @@ if (a == 4) {
 } else {
     let a = 2
 }
+
+for(;;)

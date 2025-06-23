@@ -91,6 +91,28 @@ private:
 	std::unique_ptr<ASTNode> else_branch; // optional ?
 };
 
+class ForNode : public ASTNode {
+public:
+	ForNode(std::unique_ptr<ASTNode> init,
+            std::unique_ptr<ASTNode> condition,
+            std::unique_ptr<ASTNode> increment,
+            std::unique_ptr<ASTNode> body)
+        : init(std::move(init))
+        , condition(std::move(condition))
+        , increment(std::move(increment))
+        , body(std::move(body))
+    {
+    }
+
+    void pretty_print(int level) override;
+
+private:
+    std::unique_ptr<ASTNode> init;
+    std::unique_ptr<ASTNode> condition;
+    std::unique_ptr<ASTNode> increment;
+    std::unique_ptr<ASTNode> body;
+};
+
 class BlockNode : public ASTNode {
 public:
 	void pretty_print(int level) override;

@@ -82,6 +82,9 @@ std::unique_ptr<ASTNode> Parser::parse_statement()
 	
 	if (check(TokenType::LBrace))
 		return parse_block();
+
+	if (check(TokenType::For))
+		return parse_for_statement();
 	
 	return parse_expression();
 }
@@ -133,6 +136,48 @@ std::unique_ptr<ASTNode> Parser::parse_if_statement()
     }
 
     return std::make_unique<IfNode>(std::move(condition), std::move(then_branch), std::move(else_branch));
+}
+
+std::unique_ptr<ASTNode> Parser::parse_for_statement()
+{
+	Token for_token = eat(); // eat "for"
+
+	if (!match(TokenType::LParen))
+		return std::make_unique<ErrorNode>("Expected '(' after 'for");
+
+	// init
+	std::unique_ptr<ASTNode> init = nullptr;
+	if (!check(TokenType::Semicolon)) {
+		if(!check(TokenType::Let)) {
+			init = parse_assignment();
+		} else {
+			init = parse_expression();
+		}
+	}
+	
+	if (!match(TokenType::Semicolon))
+		return std::make_unique<ErrorNode>("Expected ';' after for loop initialization.");
+	
+	// condition
+	std::unique_ptr<ASTNode> cond = nullptr;
+	if (!check(TokenType::Semicolon))
+		cond = parse_expression();
+
+	if (!match(TokenType::Semicolon))
+		return std::make_unique<ErrorNode>("Exepected ';' after for loop condition.");
+
+	// loop increment
+	std::unique_ptr<ASTNode> incr = nullptr;
+	if (!check(TokenType::Semicolon))
+		incr = parse_expression();
+
+	if (!match(TokenType::RParen))
+		return std::make_unique<ErrorNode>("Execpted ')' after for loop increment.");
+
+	std::unique_ptr<ASTNode> body = parse_statement();
+
+	return std::make_unique<ForNode>(std::move(init), std::move(cond), 
+									 std::move(incr), std::move(body));
 }
 
 std::unique_ptr<ASTNode> Parser::parse_block()

@@ -73,6 +73,10 @@ void IfNode::pretty_print(int level)
     }
 }
 
+void ForNode::pretty_print(int level)
+{
+}
+
 void BlockNode::pretty_print(int level)
 {
     std::cout << build_indent(level) << "BLOCK\n";
