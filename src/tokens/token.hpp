@@ -28,6 +28,8 @@ enum TokenType {
 	GreaterEqual,
 	If,
 	Else,
+	For,
+	Semicolon,
 	Invalid
 };
 

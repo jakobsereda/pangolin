@@ -23,6 +23,8 @@ std::vector<Token> Tokenizer::tokenize()
 				tokens.push_back({ TokenType::If, ident, row, col });
 			} else if (ident == "else") {
 				tokens.push_back({ TokenType::Else, ident, row, col });
+			} else if (ident == "for") {
+				tokens.push_back({ TokenType::For, ident, row, col });
 			} else {
 				tokens.push_back({ TokenType::Identifier, ident, row, col });
 			}
