@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "parser.hpp"
 
@@ -143,41 +144,49 @@ std::unique_ptr<ASTNode> Parser::parse_for_statement()
 	Token for_token = eat(); // eat "for"
 
 	if (!match(TokenType::LParen))
-		return std::make_unique<ErrorNode>("Expected '(' after 'for");
+		return std::make_unique<ErrorNode>("Expected '(' after 'for'");
 
-	// init
+	// Parse initialization (can be assignment or empty)
 	std::unique_ptr<ASTNode> init = nullptr;
 	if (!check(TokenType::Semicolon)) {
-		if(!check(TokenType::Let)) {
+		if (check(TokenType::Let)) {
 			init = parse_assignment();
 		} else {
 			init = parse_expression();
 		}
 	}
 	
-	if (!match(TokenType::Semicolon))
-		return std::make_unique<ErrorNode>("Expected ';' after for loop initialization.");
+	if (!match(TokenType::Semicolon)) {
+		std::cout << "here\n";
+		return std::make_unique<ErrorNode>("Expected ';' after for loop initialization");
+	}
+
+	// Parse condition (can be empty for infinite loop)
+	std::unique_ptr<ASTNode> condition = nullptr;
+	if (!check(TokenType::Semicolon)) {
+		condition = parse_expression();
+	}
 	
-	// condition
-	std::unique_ptr<ASTNode> cond = nullptr;
-	if (!check(TokenType::Semicolon))
-		cond = parse_expression();
-
 	if (!match(TokenType::Semicolon))
-		return std::make_unique<ErrorNode>("Exepected ';' after for loop condition.");
-
-	// loop increment
-	std::unique_ptr<ASTNode> incr = nullptr;
-	if (!check(TokenType::Semicolon))
-		incr = parse_expression();
-
+		return std::make_unique<ErrorNode>("Expected ';' after for loop condition");
+	
+	// Parse increment (can be empty)
+	std::unique_ptr<ASTNode> increment = nullptr;
+	if (!check(TokenType::RParen)) {
+		increment = parse_expression();
+	}
+	
 	if (!match(TokenType::RParen))
-		return std::make_unique<ErrorNode>("Execpted ')' after for loop increment.");
+		return std::make_unique<ErrorNode>("Expected ')' after for loop increment");
 
-	std::unique_ptr<ASTNode> body = parse_statement();
+	// Parse body - for now, let's handle the case where there's no body
+	std::unique_ptr<ASTNode> body = nullptr;
+	if (!is_done()) {
+		body = parse_statement();
+	}
 
-	return std::make_unique<ForNode>(std::move(init), std::move(cond), 
-									 std::move(incr), std::move(body));
+	return std::make_unique<ForNode>(std::move(init), std::move(condition), 
+									 std::move(increment), std::move(body));
 }
 
 std::unique_ptr<ASTNode> Parser::parse_block()

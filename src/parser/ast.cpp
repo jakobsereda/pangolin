@@ -75,6 +75,30 @@ void IfNode::pretty_print(int level)
 
 void ForNode::pretty_print(int level)
 {
+    std::cout << build_indent(level) << "FOR:\n";
+    std::cout << build_indent(level + 1) << "INIT:\n";
+    if (init)
+        init->pretty_print(level + 2);
+    else
+        std::cout << build_indent(level + 2) << "(none)\n";
+
+    std::cout << build_indent(level + 1) << "CONDITION:\n";
+    if (condition)
+        condition->pretty_print(level + 2);
+    else
+        std::cout << build_indent(level + 2) << "(none)\n";
+
+    std::cout << build_indent(level + 1) << "INCREMENT:\n";
+    if (increment)
+        increment->pretty_print(level + 2);
+    else
+        std::cout << build_indent(level + 2) << "(none)\n";
+
+    std::cout << build_indent(level + 1) << "BODY:\n";
+    if (body)
+        body->pretty_print(level + 2);
+    else
+        std::cout << build_indent(level + 2);
 }
 
 void BlockNode::pretty_print(int level)

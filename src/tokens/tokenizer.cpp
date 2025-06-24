@@ -86,6 +86,7 @@ std::vector<Token> Tokenizer::tokenize()
 			case ')': tokens.push_back({ TokenType::RParen,   ")", row, col }); break;
 			case '{': tokens.push_back({ TokenType::LBrace,   "{", row, col }); break;
 			case '}': tokens.push_back({ TokenType::RBrace,   "}", row, col }); break;
+			case ';': tokens.push_back({ TokenType::Semicolon,";", row, col }); break;
 			default:  tokens.push_back({ TokenType::Invalid,  std::string(1, curr), row, col });
 		}
 
