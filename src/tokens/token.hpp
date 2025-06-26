@@ -28,6 +28,8 @@ enum TokenType {
 	GreaterEqual,
 	If,
 	Else,
+	For,
+	Semicolon,
 	Invalid
 };
 
@@ -37,3 +39,11 @@ struct Token {
 	std::size_t row;
 	std::size_t col;
 };
+
+// inline std::ostream& operator<<(std::ostream& os, const Token& token) {
+//     os << "{type: " << static_cast<int>(token.type)
+//        << ", literal: \"" << token.literal
+//        << "\", row: " << token.row
+//        << ", col: " << token.col << "}";
+//     return os;
+// }

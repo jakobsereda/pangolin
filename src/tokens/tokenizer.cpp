@@ -23,6 +23,8 @@ std::vector<Token> Tokenizer::tokenize()
 				tokens.push_back({ TokenType::If, ident, row, col });
 			} else if (ident == "else") {
 				tokens.push_back({ TokenType::Else, ident, row, col });
+			} else if (ident == "for") {
+				tokens.push_back({ TokenType::For, ident, row, col });
 			} else {
 				tokens.push_back({ TokenType::Identifier, ident, row, col });
 			}
@@ -84,6 +86,7 @@ std::vector<Token> Tokenizer::tokenize()
 			case ')': tokens.push_back({ TokenType::RParen,   ")", row, col }); break;
 			case '{': tokens.push_back({ TokenType::LBrace,   "{", row, col }); break;
 			case '}': tokens.push_back({ TokenType::RBrace,   "}", row, col }); break;
+			case ';': tokens.push_back({ TokenType::Semicolon,";", row, col }); break;
 			default:  tokens.push_back({ TokenType::Invalid,  std::string(1, curr), row, col });
 		}
 
