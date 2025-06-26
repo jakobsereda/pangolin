@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "parser.hpp"
 
@@ -82,8 +83,11 @@ std::unique_ptr<ASTNode> Parser::parse_statement()
 	
 	if (check(TokenType::LBrace))
 		return parse_block();
+
+	if (check(TokenType::For))
+		return parse_for_statement();
 	
-	std::unique_ptr<ASTNode> expr = parse_expression();
+	std::unique_ptr<ASTNode> expr = parse_expression();Add commentMore actions
 	
 	// expect semicolon after expression statements
 	if (!match(TokenType::Semicolon)) {
@@ -113,7 +117,7 @@ std::unique_ptr<ASTNode> Parser::parse_assignment()
 
 	std::unique_ptr<ASTNode> value = parse_expression();
 
-	// expect semicolons after assignments
+	// expect semicolons after assignmentsAdd commentMore actions
 	if (!match(TokenType::Semicolon)) {
 		return std::make_unique<ErrorNode>("Expected ';' after assignment.")
 	}
@@ -145,6 +149,56 @@ std::unique_ptr<ASTNode> Parser::parse_if_statement()
     }
 
     return std::make_unique<IfNode>(std::move(condition), std::move(then_branch), std::move(else_branch));
+}
+
+std::unique_ptr<ASTNode> Parser::parse_for_statement()
+{
+	Token for_token = eat(); // eat "for"
+
+	if (!match(TokenType::LParen))
+		return std::make_unique<ErrorNode>("Expected '(' after 'for'");
+
+	// Parse initialization (can be assignment or empty)
+	std::unique_ptr<ASTNode> init = nullptr;
+	if (!check(TokenType::Semicolon)) {
+		if (check(TokenType::Let)) {
+			init = parse_assignment();
+		} else {
+			init = parse_expression();
+		}
+	}
+	
+	if (!match(TokenType::Semicolon)) {
+		std::cout << "here\n";
+		return std::make_unique<ErrorNode>("Expected ';' after for loop initialization");
+	}
+
+	// Parse condition (can be empty for infinite loop)
+	std::unique_ptr<ASTNode> condition = nullptr;
+	if (!check(TokenType::Semicolon)) {
+		condition = parse_expression();
+	}
+	
+	if (!match(TokenType::Semicolon))
+		return std::make_unique<ErrorNode>("Expected ';' after for loop condition");
+	
+	// Parse increment (can be empty)
+	std::unique_ptr<ASTNode> increment = nullptr;
+	if (!check(TokenType::RParen)) {
+		increment = parse_expression();
+	}
+	
+	if (!match(TokenType::RParen))
+		return std::make_unique<ErrorNode>("Expected ')' after for loop increment");
+
+	// Parse body - for now, let's handle the case where there's no body
+	std::unique_ptr<ASTNode> body = nullptr;
+	if (!is_done()) {
+		body = parse_statement();
+	}
+
+	return std::make_unique<ForNode>(std::move(init), std::move(condition), 
+									 std::move(increment), std::move(body));
 }
 
 std::unique_ptr<ASTNode> Parser::parse_block()
