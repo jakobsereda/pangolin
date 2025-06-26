@@ -87,7 +87,7 @@ std::unique_ptr<ASTNode> Parser::parse_statement()
 	if (check(TokenType::For))
 		return parse_for_statement();
 	
-	std::unique_ptr<ASTNode> expr = parse_expression();Add commentMore actions
+	std::unique_ptr<ASTNode> expr = parse_expression();
 	
 	// expect semicolon after expression statements
 	if (!match(TokenType::Semicolon)) {
@@ -117,7 +117,7 @@ std::unique_ptr<ASTNode> Parser::parse_assignment()
 
 	std::unique_ptr<ASTNode> value = parse_expression();
 
-	// expect semicolons after assignmentsAdd commentMore actions
+	// expect semicolons after assignments
 	if (!match(TokenType::Semicolon)) {
 		return std::make_unique<ErrorNode>("Expected ';' after assignment.")
 	}
